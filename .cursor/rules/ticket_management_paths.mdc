@@ -1,0 +1,54 @@
+---
+description: "Ticket Management Agent Path Dictionary"
+globs:
+alwaysApply: true
+---
+
+# Ticket Management Agent Paths
+
+root: "/Users/username/workspace/ticket_management_agent"
+
+dirs:
+  flow: "{{root}}/Flow"
+  flow_public: "{{flow}}/Public"
+  flow_private: "{{flow}}/Private"
+  stock: "{{root}}/Stock"
+  archived: "{{root}}/Archived"
+  docs_root: "{{stock}}/documents"
+
+patterns:
+  # 基本パターン
+  flow_public_date: "{{flow_public}}/{{env.NOW:date:YYYY-MM-DD}}"
+  stock_document: "{{docs_root}}/{{document_name}}.md"
+  
+  # Ticket Management specific path patterns
+  # Flow workflow patterns (Draft → Review/Edit → Stock migration)
+  draft_ticket_analysis: "{{flow_public_date}}/draft_ticket_analysis.md"
+  draft_ticket_classification: "{{flow_public_date}}/draft_ticket_classification.md"
+  draft_progress_report: "{{flow_public_date}}/draft_progress_report.md"
+  
+  # Direct conversion patterns (immediate final format generation)
+  output_analysis_report: "{{docs_root}}/ticket_analysis_report_{{env.NOW:date:YYYY-MM-DD}}.md"
+  output_automation_config: "{{docs_root}}/automation_config_{{env.NOW:date:YYYY-MM-DD}}.md"
+  output_dashboard: "{{docs_root}}/dashboard_{{env.NOW:date:YYYY-MM-DD}}.md"
+  
+  # Stock finalized version patterns
+  stock_ticket_analysis: "{{docs_root}}/ticket_analysis.md"
+  stock_classification: "{{docs_root}}/ticket_classification.md"
+  stock_progress_report: "{{docs_root}}/progress_report.md"
+  stock_automation_config: "{{docs_root}}/automation_config.md"
+  
+  # Dedicated directory patterns
+  tickets_dir: "{{docs_root}}/tickets"
+  reports_dir: "{{docs_root}}/reports"
+  configs_dir: "{{docs_root}}/configs"
+  
+  # Ticket management specific patterns
+  ticket_archive: "{{archived}}/tickets/{{env.NOW:date:YYYY-MM}}"
+  daily_report: "{{reports_dir}}/daily_{{env.NOW:date:YYYY-MM-DD}}.md"
+  weekly_report: "{{reports_dir}}/weekly_{{env.NOW:date:YYYY-'W'WW}}.md"
+  monthly_report: "{{reports_dir}}/monthly_{{env.NOW:date:YYYY-MM}}.md"
+
+meta:
+  agent_name: "TicketManagement"
+  domain: "ticket_management"

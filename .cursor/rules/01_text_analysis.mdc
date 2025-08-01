@@ -1,0 +1,252 @@
+---
+description: Slackテキスト解析・チケット生成システム
+globs:
+alwaysApply: false
+---
+# ==========================================================
+# 01_slack_text_analysis.mdc - Slackテキスト解析・チケット生成システム
+# ==========================================================
+
+path_reference: "ticket_management_paths.mdc"
+
+# ======== Slackテキスト解析システム統合エージェント ========
+
+system_capabilities:
+  text_parsing: "Slackメッセージから顧客情報、要求内容、緊急度を自動抽出し構造化データとして整理する高精度テキスト解析機能"
+  context_understanding: "メッセージの文脈、感情、隠れた要求を理解し、適切なカテゴリ分類と重要度判定を行うコンテキスト理解機能"
+  ticket_generation: "抽出した情報を標準的なチケット形式（ID、タイトル、詳細、ステータス等）に自動変換するチケット生成機能"
+  customer_identification: "Slackユーザー情報から顧客属性、履歴、優先度レベルを特定する顧客識別・プロファイリング機能"
+  requirement_extraction: "曖昧な表現や省略された内容から具体的な作業要件と成果物を抽出・明確化する要件抽出機能"
+  integration_support: "既存のチケット管理システム、CRM、プロジェクト管理ツールとの連携を支援するデータ統合機能"
+
+# ======== Phase 1: テキスト解析・情報抽出フェーズ ========
+
+phase_1_description: |
+  Slackメッセージの包括的解析により、顧客の真の要求と文脈を理解します。
+  単純なキーワード抽出を超えて、感情分析、意図推定、緊急度判定を実行し、
+  後続のチケット生成に必要な高品質な構造化データを生成します。
+
+# ======== Phase 2: チケット生成・品質保証フェーズ ========
+
+phase_2_description: |
+  抽出した情報を業界標準のチケット形式に変換し、品質検証を実施します。
+  重複チケットの防止、不完全情報の補完、適切なカテゴリ分類を行い、
+  即座に作業開始可能な高品質チケットを生成・配信します。
+
+# ======== 統合オプション質問 ========
+
+slack_text_analysis_questions:
+  - key: "slack_message_content"
+    prompt: "解析対象のSlackメッセージ内容を貼り付けてください："
+    type: "multiline"
+    required: true
+    placeholder: "例：@channel 緊急！本番環境でエラーが発生しています。ユーザーがログインできない状況です。至急対応をお願いします。 - 田中（ABC商事）"
+
+  - key: "slack_metadata"
+    prompt: "Slackメッセージのメタデータ（送信者、チャンネル、時刻等）があれば入力してください："
+    type: "text"
+    required: false
+    placeholder: "例：送信者：田中太郎、チャンネル：#support、時刻：2024-01-15 14:30"
+
+  - key: "customer_context"
+    prompt: "顧客・プロジェクトの背景情報があれば入力してください："
+    type: "multiline"
+    required: false
+    placeholder: "例：ABC商事様 - 契約プラン：エンタープライズ、担当：山田、過去のインシデント：月2回程度"
+
+  - key: "existing_tickets"
+    prompt: "関連する既存チケットがあれば番号・内容を入力してください："
+    type: "text"
+    required: false
+    placeholder: "例：TKT-2024-001（同様のログイン問題）、TKT-2024-015（システムメンテナンス関連）"
+
+  - key: "urgency_override"
+    prompt: "緊急度の手動調整が必要な場合は指定してください："
+    type: "select"
+    options: ["自動判定", "低", "中", "高", "緊急"]
+    required: false
+
+  - key: "category_hint"
+    prompt: "カテゴリのヒントがあれば選択してください："
+    type: "select"
+    options: ["自動分類", "技術サポート", "運用サポート", "機能要望", "バグ報告", "アカウント関連", "その他"]
+    required: false
+
+# ======== Slackテキスト解析プロセス ========
+
+slack_text_analysis_steps:
+  1_text_parsing:
+    name: "テキスト解析・構造化"
+    phases:
+      - "自然言語処理によるメッセージ内容の文法解析・意味解析・感情分析の実行"
+      - "顧客名、連絡先、要求内容、期限、制約条件等の重要情報の自動抽出・分類"
+      - "省略表現、専門用語、暗黙の前提の補完と明確化による情報完全性の確保"
+    quality_standards:
+      - "情報抽出精度90%以上（手動検証との比較）"
+      - "重要情報（顧客名、要求内容）の抽出漏れゼロ"
+      - "文脈理解による適切な解釈・補完の実施"
+  
+  2_context_analysis:
+    name: "コンテキスト分析・要求理解"
+    phases:
+      - "過去のやり取り、プロジェクト履歴、顧客特性を考慮した包括的コンテキスト分析"
+      - "明示的要求と暗黙的要求の識別・分離による真の顧客ニーズの特定"
+      - "技術的制約、ビジネス影響、リソース要求の評価による実現可能性の評価"
+    integration_points:
+      - "CRMシステムからの顧客履歴情報取得・参照"
+      - "プロジェクト管理ツールからの関連タスク・進捗情報取得"
+      - "ナレッジベースからの類似事例・解決パターン検索"
+
+# ======== Slackテキスト解析ワークフロー ========
+
+slack_text_analysis_workflow:
+  phase_1:
+    - name: "メッセージ前処理"
+      action: "validate_input"
+      description: "Slackメッセージの形式確認・文字エンコーディング正規化"
+      mandatory: true
+    
+    - name: "情報抽出実行"
+      action: "execute_analysis"
+      description: "自然言語処理による重要情報の自動抽出"
+      mandatory: true
+    
+    - name: "コンテキスト補完"
+      action: "context_enrichment"
+      description: "外部システム連携による情報補完・検証"
+      mandatory: true
+
+  phase_2:
+    - name: "チケット構造生成"
+      action: "generate_structure"
+      description: "標準チケット形式への情報マッピング・構造化"
+      mandatory: true
+    
+    - name: "品質検証"
+      action: "quality_check"
+      description: "生成チケットの完全性・一貫性・精度の検証"
+      mandatory: true
+    
+    - name: "配信準備"
+      action: "prepare_delivery"
+      description: "チケット管理システムへの配信形式最適化"
+      mandatory: true
+
+# ======== テンプレート ========
+
+slack_text_analysis_template: |
+  # Slackテキスト解析結果 - {{meta.timestamp}}
+  
+  ## 📥 原文情報
+  **Slackメッセージ**:
+  ```
+  {{slack_message_content}}
+  ```
+  
+  **メタデータ**: {{slack_metadata}}
+  **解析日時**: {{meta.timestamp}}
+  
+  ## 🔍 解析結果
+  
+  ### 顧客情報
+  - **顧客名**: {{extracted.customer_name}}
+  - **連絡先**: {{extracted.contact_info}}
+  - **顧客分類**: {{extracted.customer_type}}
+  - **優先度レベル**: {{extracted.priority_level}}
+  
+  ### 要求内容
+  - **主要要求**: {{extracted.primary_request}}
+  - **詳細説明**: {{extracted.detailed_description}}
+  - **期待成果物**: {{extracted.expected_deliverable}}
+  - **制約・条件**: {{extracted.constraints}}
+  
+  ### 分類情報
+  - **カテゴリ**: {{extracted.category}}
+  - **緊急度**: {{extracted.urgency}}
+  - **重要度**: {{extracted.importance}}
+  - **推定工数**: {{extracted.estimated_effort}}
+  
+  ## 🎫 生成チケット
+  
+  ### チケット基本情報
+  - **チケットID**: TKT-{{meta.date}}-{{generated.ticket_number}}
+  - **タイトル**: {{generated.ticket_title}}
+  - **ステータス**: 新規
+  - **作成日**: {{meta.timestamp}}
+  
+  ### 作業詳細
+  **概要**: {{generated.work_summary}}
+  
+  **作業内容**:
+  {{generated.work_details}}
+  
+  **成功基準**:
+  {{generated.success_criteria}}
+  
+  ### 関連情報
+  - **関連チケット**: {{existing_tickets}}
+  - **顧客背景**: {{customer_context}}
+  - **参考資料**: {{generated.reference_materials}}
+  
+  ## 📋 次のアクション
+  
+  1. **即座対応**: {{generated.immediate_actions}}
+  2. **担当者割り当て**: {{generated.assignee_suggestion}}
+  3. **フォローアップ**: {{generated.followup_schedule}}
+  
+  ---
+  **文書情報**
+  - 作成日: {{meta.timestamp}}
+  - ドメイン: ticket_management
+  - エージェント: SlackTicketAgent
+  - 分類: テキスト解析・チケット生成
+
+# ======== エラーハンドリング ========
+
+error_handling:
+  insufficient_information:
+    message: "Slackメッセージの情報が不十分です"
+    recovery_actions:
+      - "顧客への追加情報確認依頼の自動生成"
+      - "過去のやり取りからの情報補完の試行"
+  
+  parsing_failure:
+    message: "テキスト解析に失敗しました"
+    recovery_actions:
+      - "手動解析モードへの切り替え"
+      - "部分的解析結果での暫定チケット生成"
+
+# ======== 設定 ========
+
+slack_text_analysis_settings:
+  auto_assignment: true
+  duplicate_detection: true
+  escalation_rules: true
+  notification_enabled: true
+
+# ======== 統合ポイント ========
+
+integration_points:
+  ticket_system:
+    trigger: "チケット生成完了"
+    action: "call 02_ticket_classification.mdc => auto_classification"
+  
+  crm_system:
+    trigger: "顧客情報抽出"
+    action: "customer_profile_enrichment"
+
+# ======== 品質保証 ========
+
+quality_assurance:
+  mandatory_checks:
+    - "顧客名・要求内容の抽出完了確認"
+    - "チケット形式の標準準拠確認"
+    - "重複チケットの検出・防止確認"
+
+# ======== 成功メトリクス ========
+
+success_metrics:
+  - "情報抽出精度 > 90%"
+  - "チケット生成時間 < 5秒"
+  - "重複チケット発生率 < 5%"
+  - "顧客満足度 > 4.0/5.0"

@@ -1,0 +1,132 @@
+---
+description: "Ticket Management Agent Master Rules"
+globs:
+alwaysApply: true
+---
+
+# Ticket Management Agent Master Rules
+
+## A-01-XX. Domain Specific Rules (01-89 range)
+
+### Text Analysis & Ticket Generation
+- trigger: "(text analysis|ticket generation|create ticket|analyze message|テキスト解析|チケット生成)"
+  priority: high
+  steps:
+    - name: "start_message"
+      action: "message"
+      content: "**Starting Text Analysis & Ticket Generation.**\n\nI will extract customer information and requirements from your message and generate a standardized ticket format."
+    - name: "collect_existing_info"
+      action: "gather_existing_info"
+    - name: "ask_analysis_questions"
+      action: "call 01_text_analysis.mdc => text_analysis_questions"
+    - name: "create_ticket_draft"
+      action: "create_markdown_file"
+      path: "{{patterns.draft_ticket_analysis}}"
+      template_reference: "01_text_analysis.mdc => text_analysis_template"
+    - name: "completion_message"
+      action: "message"
+      content: "**Text analysis completed.**\n\nSaved to: `{{patterns.draft_ticket_analysis}}`\n\nPlease review the content and make any necessary edits. Use 'Stock migration' to finalize when ready."
+
+### Ticket Classification & Assignment
+- trigger: "(ticket classification|classify ticket|assign ticket|prioritize|チケット分類|優先度付け)"
+  priority: high
+  steps:
+    - name: "start_message"
+      action: "message"
+      content: "**Starting Ticket Classification & Assignment.**\n\nPerforming precise classification through multi-dimensional analysis and optimal resource allocation."
+    - name: "collect_existing_info"
+      action: "gather_existing_info"
+    - name: "ask_classification_questions"
+      action: "call 02_classification.mdc => classification_questions"
+    - name: "create_classification_draft"
+      action: "create_markdown_file"
+      path: "{{patterns.draft_ticket_classification}}"
+      template_reference: "02_classification.mdc => classification_template"
+    - name: "completion_message"
+      action: "message"
+      content: "**Ticket classification & assignment completed.**\n\nSaved to: `{{patterns.draft_ticket_classification}}`\n\nPlease review the classification results and assignee allocation."
+
+### Progress Tracking & Status Update
+- trigger: "(progress tracking|status update|track progress|update status|進捗管理|ステータス更新)"
+  priority: medium
+  steps:
+    - name: "start_message"
+      action: "message"
+      content: "**Starting Progress Tracking & Status Update.**\n\nI will gather detailed information about the current ticket status and provide comprehensive progress management."
+    - name: "collect_existing_info"
+      action: "gather_existing_info"
+    - name: "ask_progress_questions"
+      action: "call 03_tracking.mdc => tracking_questions"
+    - name: "create_progress_report"
+      action: "create_markdown_file"
+      path: "{{patterns.draft_progress_report}}"
+      template_reference: "03_tracking.mdc => tracking_template"
+    - name: "completion_message"
+      action: "message"
+      content: "**Progress management report created.**\n\nSaved to: `{{patterns.draft_progress_report}}`\n\nPlease review the progress status and next actions."
+
+### Report & Dashboard Generation
+- trigger: "(generate report|dashboard|reporting|analytics report|レポート生成|ダッシュボード)"
+  priority: medium
+  steps:
+    - name: "start_message"
+      action: "message"
+      content: "**Starting Report & Dashboard Generation.**\n\nPerforming comprehensive analysis and visualization of ticket management data."
+    - name: "collect_existing_info"
+      action: "gather_existing_info"
+    - name: "ask_reporting_questions"
+      action: "call 04_reporting.mdc => reporting_questions"
+    - name: "create_analysis_report"
+      action: "create_markdown_file"
+      path: "{{patterns.output_analysis_report}}"
+      template_reference: "04_reporting.mdc => reporting_template"
+    - name: "completion_message"
+      action: "message"
+      content: "**Analysis report generated.**\n\nSaved to: `{{patterns.output_analysis_report}}`\n\nPlease review the comprehensive analysis results and insights."
+
+### Automation Rules & Notification Setup
+- trigger: "(automation setup|notification setup|automation rules|escalation|自動化設定|通知設定)"
+  priority: low
+  steps:
+    - name: "start_message"
+      action: "message"
+      content: "**Starting Automation Rules & Notification Setup.**\n\nBuilding automation systems for efficient ticket processing."
+    - name: "collect_existing_info"
+      action: "gather_existing_info"
+    - name: "ask_automation_questions"
+      action: "call 05_automation.mdc => automation_questions"
+    - name: "create_automation_config"
+      action: "create_markdown_file"
+      path: "{{patterns.output_automation_config}}"
+      template_reference: "05_automation.mdc => automation_template"
+    - name: "completion_message"
+      action: "message"
+      content: "**Automation setup completed.**\n\nSaved to: `{{patterns.output_automation_config}}`\n\nPlease review the configuration and apply to your system as needed."
+
+## A-01-90. Task Management Rules
+- trigger: "(今日のタスク作成|daily task|task作成)"
+  priority: medium
+  steps:
+    - name: "create_daily_task"
+      action: "call 90_task_management.mdc => create_daily_task"
+
+## A-01-97. Flow to Stock Rules
+- trigger: "(Flow確定|Stock移動|確定版作成)"
+  priority: medium
+  steps:
+    - name: "move_to_stock"
+      action: "call 97_flow_to_stock_rules.mdc => flow_to_stock_process"
+
+## A-01-98. Flow Assist Rules
+- trigger: "(Flow支援|作業支援|draft支援)"
+  priority: low
+  steps:
+    - name: "flow_assist"
+      action: "call 98_flow_assist.mdc => provide_flow_assistance"
+
+## A-01-99. Rule Maintenance
+- trigger: "(ルール更新|rule update|ルールメンテナンス)"
+  priority: low
+  steps:
+    - name: "rule_maintenance"
+      action: "call 99_rule_maintenance.mdc => maintain_rules"
