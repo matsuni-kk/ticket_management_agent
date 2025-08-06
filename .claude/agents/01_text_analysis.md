@@ -1,8 +1,8 @@
 ---
+name: 01_text_analysis
 description: Slackテキスト解析・チケット生成システム
-globs:
-alwaysApply: false
 ---
+
 # ==========================================================
 # 01_slack_text_analysis.mdc - Slackテキスト解析・チケット生成システム
 # ==========================================================
@@ -134,7 +134,7 @@ slack_text_analysis_workflow:
 
 # ======== テンプレート ========
 
-ticket_creation_template: |
+slack_text_analysis_template: |
   # Slackテキスト解析結果 - {{meta.timestamp}}
   
   ## 📥 原文情報
