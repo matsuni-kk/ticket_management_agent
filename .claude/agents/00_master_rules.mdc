@@ -155,7 +155,34 @@ master_triggers:
         action: "call 98_flow_assist.mdc => provide_flow_assistance"
         message: "Flow作業の支援を提供します。"
 
-  # 9. ルールメンテナンス
+  # 9. 残チケット集約・進捗管理
+  - trigger: "(残チケット確認|未完了案件|daily progress|weekly progress|毎日の進捗|週次の進捗|残案件管理)"
+    priority: high
+    mode: "interactive"
+    steps:
+      - name: "start_message"
+        action: "message"
+        content: "**残チケット集約・進捗管理を開始します。**\n\n全未完了案件を横断的に分析し、包括的な進捗管理レポートを生成します。"
+      - name: "scan_all_tickets"
+        action: "scan_ticket_directories"
+        message: "全チケットディレクトリをスキャン中..."
+      - name: "collect_pending_tickets"
+        action: "collect_incomplete_tickets"
+        message: "未完了・進行中チケットを抽出中..."
+      - name: "ask_progress_scope"
+        action: "call 03_tracking.mdc => bulk_progress_questions"
+        message: "進捗管理の範囲と頻度を確認します。"
+      - name: "create_bulk_progress_report"
+        action: "create_markdown_file"
+        path: "{{patterns.bulk_progress_report}}"
+        template_reference: "03_tracking.mdc => bulk_progress_template"
+        message: "包括的進捗管理レポートを作成中..."
+        mandatory: true
+      - name: "completion_message"
+        action: "notify"
+        message: "**残チケット集約・進捗管理完了。**\n\n保存先: `{{patterns.bulk_progress_report}}`\n\n全未完了案件の状況と推奨アクションを確認してください。"
+
+  # 10. ルールメンテナンス
   - trigger: "(ルール更新|rule update|ルールメンテナンス)"
     priority: low
     steps:
@@ -177,6 +204,12 @@ auto_triggers:
     auto_confirm: false
   - event: "daily_report_time"
     trigger: "レポート生成"
+    auto_confirm: false
+  - event: "daily_progress_check"
+    trigger: "残チケット確認"
+    auto_confirm: false
+  - event: "weekly_progress_review"
+    trigger: "週次の進捗"
     auto_confirm: false
   - event: "flow_content_ready"
     trigger: "Stock移動"

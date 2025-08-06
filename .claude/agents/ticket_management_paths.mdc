@@ -57,6 +57,11 @@ patterns:
   weekly_report: "{{reports_dir}}/weekly_{{env.NOW:date:YYYY-'W'WW}}.md"
   monthly_report: "{{reports_dir}}/monthly_{{env.NOW:date:YYYY-MM}}.md"
   
+  # Bulk progress management patterns (残チケット集約・進捗管理)
+  bulk_progress_report: "{{reports_dir}}/bulk_progress_{{env.NOW:date:YYYY-MM-DD}}.md"
+  daily_progress_summary: "{{reports_dir}}/daily_progress_{{env.NOW:date:YYYY-MM-DD}}.md"
+  weekly_progress_summary: "{{reports_dir}}/weekly_progress_{{env.NOW:date:YYYY-'W'WW}}.md"
+  
   # Standard ticket file patterns (統一されたファイル名規則 + フロントマター)
   ticket_inquiry: "{{ticket_folder}}/inquiry.md"
   ticket_response: "{{ticket_folder}}/response.md"

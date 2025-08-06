@@ -10,29 +10,29 @@ path_reference: "ticket_management_paths.mdc"
 # チケット管理業務を効率化し、最適な顧客対応とワークフロー管理を提供
 
 master_triggers:
-  # 1. テキスト解析・チケット生成
-  - trigger: "(text analysis|ticket generation|create ticket|analyze message|テキスト解析|チケット生成)"
+  # 1. テキスト解析・チケット生成 (Direct to Tickets)
+  - trigger: "(text analysis|ticket generation|create ticket|analyze message|テキスト解析|チケット生成|新チケット)"
     priority: high
     mode: "interactive"
     steps:
       - name: "start_message"
         action: "message"
-        content: "**テキスト解析・チケット生成を開始します。**\n\n顧客メッセージから情報を抽出し、標準化されたチケット形式を生成します。"
+        content: "**テキスト解析・チケット生成を開始します。**\n\n顧客メッセージから情報を抽出し、直接ticketsディレクトリにチケットを作成します。"
       - name: "collect_existing_info"
         action: "gather_existing_info"
-        message: "既存の顧客情報を収集中..."
+        message: "既存の顧客情報と関連チケットを収集中..."
       - name: "ask_analysis_questions"
         action: "call .claude/agents/01_text_analysis.md => text_analysis_questions"
         message: "詳細な要件分析を実行します。"
-      - name: "create_ticket_draft"
-        action: "create_markdown_file"
-        path: "{{patterns.draft_ticket_analysis}}"
-        template_reference: "01_text_analysis.mdc => text_analysis_template"
-        message: "チケットドラフトを作成中..."
+      - name: "create_ticket_direct"
+        action: "create_ticket_structure"
+        path: "{{patterns.ticket_folder}}"
+        template_reference: "01_text_analysis.mdc => ticket_creation_template"
+        message: "チケットを直接作成中..."
         mandatory: true
       - name: "completion_message"
         action: "notify"
-        message: "**テキスト解析完了。**\n\n保存先: `{{patterns.draft_ticket_analysis}}`\n\n内容を確認後、'Stock移動'で確定してください。"
+        message: "**チケット作成完了。**\n\n保存先: `{{patterns.ticket_folder}}`\n\n関連チケットとの連携情報も整理しました。"
 
   # 2. チケット分類・割り当て
   - trigger: "(ticket classification|classify ticket|assign ticket|prioritize|チケット分類|優先度付け)"
@@ -48,15 +48,15 @@ master_triggers:
       - name: "ask_classification_questions"
         action: "call .claude/agents/02_classification.md => classification_questions"
         message: "分類基準と割り当て条件を分析します。"
-      - name: "create_classification_draft"
-        action: "create_markdown_file"
-        path: "{{patterns.draft_ticket_classification}}"
+      - name: "create_classification_direct"
+        action: "update_ticket_classification"
+        path: "{{patterns.ticket_folder}}"
         template_reference: "02_classification.mdc => classification_template"
-        message: "分類結果を作成中..."
+        message: "分類結果を直接チケットに記録中..."
         mandatory: true
       - name: "completion_message"
         action: "notify"
-        message: "**チケット分類・割り当て完了。**\n\n保存先: `{{patterns.draft_ticket_classification}}`\n\n分類結果と担当者配分を確認してください。"
+        message: "**チケット分類・割り当て完了。**\n\n保存先: `{{patterns.ticket_folder}}`\n\n分類結果と担当者配分をチケットに記録しました。"
 
   # 3. 進捗管理・ステータス更新
   - trigger: "(progress tracking|status update|track progress|update status|進捗管理|ステータス更新)"
@@ -72,15 +72,15 @@ master_triggers:
       - name: "ask_progress_questions"
         action: "call .claude/agents/03_tracking.md => tracking_questions"
         message: "進捗詳細と次のアクションを分析します。"
-      - name: "create_progress_report"
-        action: "create_markdown_file"
-        path: "{{patterns.draft_progress_report}}"
+      - name: "update_progress_direct"
+        action: "update_ticket_progress"
+        path: "{{patterns.ticket_folder}}"
         template_reference: "03_tracking.mdc => tracking_template"
-        message: "進捗レポートを作成中..."
+        message: "進捗状況を直接チケットに更新中..."
         mandatory: true
       - name: "completion_message"
         action: "notify"
-        message: "**進捗管理レポート作成完了。**\n\n保存先: `{{patterns.draft_progress_report}}`\n\n進捗状況と次のアクションを確認してください。"
+        message: "**進捗管理更新完了。**\n\n保存先: `{{patterns.ticket_folder}}`\n\n進捗状況と次のアクションをチケットに記録しました。"
 
   # 4. レポート・ダッシュボード生成
   - trigger: "(generate report|dashboard|reporting|analytics report|レポート生成|ダッシュボード)"
@@ -154,7 +154,34 @@ master_triggers:
         action: "call .claude/agents/98_flow_assist.md => provide_flow_assistance"
         message: "Flow作業の支援を提供します。"
 
-  # 9. ルールメンテナンス
+  # 9. 残チケット集約・進捗管理
+  - trigger: "(残チケット確認|未完了案件|daily progress|weekly progress|毎日の進捗|週次の進捗|残案件管理)"
+    priority: high
+    mode: "interactive"
+    steps:
+      - name: "start_message"
+        action: "message"
+        content: "**残チケット集約・進捗管理を開始します。**\n\n全未完了案件を横断的に分析し、包括的な進捗管理レポートを生成します。"
+      - name: "scan_all_tickets"
+        action: "scan_ticket_directories"
+        message: "全チケットディレクトリをスキャン中..."
+      - name: "collect_pending_tickets"
+        action: "collect_incomplete_tickets"
+        message: "未完了・進行中チケットを抽出中..."
+      - name: "ask_progress_scope"
+        action: "call .claude/agents/03_tracking.md => bulk_progress_questions"
+        message: "進捗管理の範囲と頻度を確認します。"
+      - name: "create_bulk_progress_report"
+        action: "create_markdown_file"
+        path: "{{patterns.bulk_progress_report}}"
+        template_reference: "03_tracking.mdc => bulk_progress_template"
+        message: "包括的進捗管理レポートを作成中..."
+        mandatory: true
+      - name: "completion_message"
+        action: "notify"
+        message: "**残チケット集約・進捗管理完了。**\n\n保存先: `{{patterns.bulk_progress_report}}`\n\n全未完了案件の状況と推奨アクションを確認してください。"
+
+  # 10. ルールメンテナンス
   - trigger: "(ルール更新|rule update|ルールメンテナンス)"
     priority: low
     steps:
@@ -176,6 +203,12 @@ auto_triggers:
     auto_confirm: false
   - event: "daily_report_time"
     trigger: "レポート生成"
+    auto_confirm: false
+  - event: "daily_progress_check"
+    trigger: "残チケット確認"
+    auto_confirm: false
+  - event: "weekly_progress_review"
+    trigger: "週次の進捗"
     auto_confirm: false
   - event: "flow_content_ready"
     trigger: "Stock移動"
@@ -289,7 +322,8 @@ patterns:
   stock_document: "{{docs_root}}/{{document_name}}.md"
   
   # Ticket Management specific path patterns
-  # Flow workflow patterns (Draft → Review/Edit → Stock migration)
+  # Direct ticket creation patterns (Flow deprecated - direct to tickets)
+  # Legacy Flow patterns (kept for reference, use ticket_* patterns instead)
   draft_ticket_analysis: "{{flow_public_date}}/draft_ticket_analysis.md"
   draft_ticket_classification: "{{flow_public_date}}/draft_ticket_classification.md"
   draft_progress_report: "{{flow_public_date}}/draft_progress_report.md"
@@ -321,6 +355,11 @@ patterns:
   daily_report: "{{reports_dir}}/daily_{{env.NOW:date:YYYY-MM-DD}}.md"
   weekly_report: "{{reports_dir}}/weekly_{{env.NOW:date:YYYY-'W'WW}}.md"
   monthly_report: "{{reports_dir}}/monthly_{{env.NOW:date:YYYY-MM}}.md"
+  
+  # Bulk progress management patterns (残チケット集約・進捗管理)
+  bulk_progress_report: "{{reports_dir}}/bulk_progress_{{env.NOW:date:YYYY-MM-DD}}.md"
+  daily_progress_summary: "{{reports_dir}}/daily_progress_{{env.NOW:date:YYYY-MM-DD}}.md"
+  weekly_progress_summary: "{{reports_dir}}/weekly_progress_{{env.NOW:date:YYYY-'W'WW}}.md"
   
   # Standard ticket file patterns (統一されたファイル名規則 + フロントマター)
   ticket_inquiry: "{{ticket_folder}}/inquiry.md"

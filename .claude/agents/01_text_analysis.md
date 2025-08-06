@@ -134,7 +134,7 @@ slack_text_analysis_workflow:
 
 # ======== テンプレート ========
 
-slack_text_analysis_template: |
+ticket_creation_template: |
   # Slackテキスト解析結果 - {{meta.timestamp}}
   
   ## 📥 原文情報

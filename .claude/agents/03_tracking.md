@@ -78,6 +78,45 @@ progress_tracking_questions:
     required: false
     placeholder: "例：2024-01-16 18:00"
 
+# ======== 残チケット集約・一括進捗管理質問 ========
+
+bulk_progress_questions:
+  - key: "report_scope"
+    prompt: "進捗管理レポートの範囲を選択してください："
+    type: "select"
+    options: ["今日のみ", "今週", "今月", "全期間", "カスタム期間"]
+    required: true
+
+  - key: "target_status"
+    prompt: "対象とするチケットステータスを選択してください（複数選択可）："
+    type: "multiselect"
+    options: ["新規", "割り当て済み", "作業中", "レビュー中", "顧客確認中", "保留"]
+    required: true
+
+  - key: "priority_filter"
+    prompt: "優先度フィルタを設定しますか："
+    type: "select"
+    options: ["全優先度", "緊急のみ", "高以上", "中以上", "低以上"]
+    required: false
+
+  - key: "company_filter"
+    prompt: "特定の会社に絞り込みますか（空白で全会社対象）："
+    type: "text"
+    required: false
+    placeholder: "例：company_name または空白"
+
+  - key: "report_type"
+    prompt: "レポートタイプを選択してください："
+    type: "select"
+    options: ["詳細レポート", "サマリーレポート", "アクションリスト", "リスク分析レポート"]
+    required: true
+
+  - key: "followup_actions"
+    prompt: "推奨フォローアップアクションを含めますか："
+    type: "select"
+    options: ["はい - 詳細な推奨事項", "はい - 簡潔な推奨事項", "いいえ"]
+    required: true
+
 # ======== 進捗管理プロセス ========
 
 progress_tracking_steps:
@@ -281,6 +320,164 @@ progress_tracking_template: |
   - ドメイン: ticket_management
   - エージェント: SlackTicketAgent
   - 分類: 進捗管理・追跡
+
+# ======== 残チケット集約・一括進捗管理テンプレート ========
+
+bulk_progress_template: |
+  # 残チケット集約・進捗管理レポート - {{meta.timestamp}}
+  
+  ## 📋 レポート概要
+  **レポート範囲**: {{report_scope}}
+  **対象ステータス**: {{target_status}}
+  **優先度フィルタ**: {{priority_filter}}
+  **会社フィルタ**: {{company_filter}}
+  **レポートタイプ**: {{report_type}}
+  **生成日時**: {{meta.timestamp}}
+  **レポート作成者**: {{reporter_name}}
+  
+  ## 🎯 全体サマリー
+  
+  ### チケット統計
+  - **未完了チケット総数**: {{summary.total_incomplete}}件
+  - **緊急対応必要**: {{summary.urgent_count}}件
+  - **遅延リスク**: {{summary.delayed_risk}}件
+  - **今日期限**: {{summary.due_today}}件
+  - **今週期限**: {{summary.due_this_week}}件
+  
+  ### 会社別内訳
+  {{#each company_breakdown}}
+  - **{{this.company_name}}**: {{this.total_tickets}}件
+    - 緊急: {{this.urgent}}件 | 高: {{this.high}}件 | 中: {{this.medium}}件 | 低: {{this.low}}件
+    - 遅延リスク: {{this.risk_count}}件
+  {{/each}}
+  
+  ### ステータス別内訳
+  {{#each status_breakdown}}
+  - **{{this.status}}**: {{this.count}}件 ({{this.percentage}}%)
+  {{/each}}
+  
+  ## 🚨 緊急対応必要案件
+  
+  {{#each urgent_tickets}}
+  ### {{this.ticket_id}} - {{this.title}}
+  - **会社**: {{this.company}}
+  - **優先度**: {{this.priority}}
+  - **ステータス**: {{this.status}}
+  - **期限**: {{this.due_date}}
+  - **経過日数**: {{this.days_elapsed}}日
+  - **担当者**: {{this.assigned_to}}
+  - **課題**: {{this.current_issues}}
+  - **推奨アクション**: {{this.recommended_action}}
+  
+  ---
+  {{/each}}
+  
+  ## ⚠️ 遅延リスク案件
+  
+  {{#each risk_tickets}}
+  ### {{this.ticket_id}} - {{this.title}}
+  - **会社**: {{this.company}}
+  - **優先度**: {{this.priority}}
+  - **ステータス**: {{this.status}}
+  - **進捗率**: {{this.progress_percentage}}%
+  - **予定完了**: {{this.estimated_completion}}
+  - **遅延予測**: {{this.delay_prediction}}
+  - **リスク要因**: {{this.risk_factors}}
+  - **対策**: {{this.mitigation_plan}}
+  
+  ---
+  {{/each}}
+  
+  ## 📊 進行中案件詳細
+  
+  {{#each active_tickets}}
+  ### {{this.ticket_id}} - {{this.title}}
+  - **会社**: {{this.company}}
+  - **優先度**: {{this.priority}}
+  - **ステータス**: {{this.status}}
+  - **進捗率**: {{this.progress_percentage}}%
+  - **担当者**: {{this.assigned_to}}
+  - **最終更新**: {{this.last_update}}
+  - **次のアクション**: {{this.next_action}}
+  - **完了予定**: {{this.estimated_completion}}
+  
+  {{#if this.recent_updates}}
+  **最新の進捗**:
+  {{this.recent_updates}}
+  {{/if}}
+  
+  {{#if this.blockers}}
+  **現在のブロッカー**:
+  {{this.blockers}}
+  {{/if}}
+  
+  ---
+  {{/each}}
+  
+  ## 💡 推奨アクション・フォローアップ
+  
+  ### 即座対応（今日中）
+  {{#each immediate_actions}}
+  - **{{this.ticket_id}}**: {{this.action}} (担当: {{this.assignee}})
+  {{/each}}
+  
+  ### 短期対応（3日以内）
+  {{#each short_term_actions}}
+  - **{{this.ticket_id}}**: {{this.action}} (期限: {{this.deadline}})
+  {{/each}}
+  
+  ### 中期対応（1週間以内）
+  {{#each medium_term_actions}}
+  - **{{this.ticket_id}}**: {{this.action}} (計画: {{this.plan}})
+  {{/each}}
+  
+  ## 📈 パフォーマンス分析
+  
+  ### 効率性指標
+  - **平均解決日数**: {{metrics.avg_resolution_days}}日
+  - **SLA達成率**: {{metrics.sla_achievement}}%
+  - **顧客満足度**: {{metrics.customer_satisfaction}}/5.0
+  - **チーム稼働率**: {{metrics.team_utilization}}%
+  
+  ### 改善提案
+  - **プロセス改善**: {{improvement.process}}
+  - **リソース最適化**: {{improvement.resource}}
+  - **品質向上**: {{improvement.quality}}
+  - **予防策**: {{improvement.prevention}}
+  
+  ## 🔄 定期フォローアップ計画
+  
+  ### 日次チェック項目
+  - 新規チケット確認
+  - 緊急案件ステータス更新
+  - 期限近接チケットの進捗確認
+  - リスクチケットの状況監視
+  
+  ### 週次レビュー項目
+  - 全チケット進捗総合評価
+  - リソース配分の見直し
+  - プロセス改善点の検討
+  - 顧客フィードバックの収集
+  
+  ## 📞 エスカレーション・連絡先
+  
+  ### 緊急時連絡先
+  {{#each escalation_contacts}}
+  - **{{this.level}}**: {{this.contact_person}} ({{this.contact_method}})
+  {{/each}}
+  
+  ### 会社別担当者
+  {{#each company_contacts}}
+  - **{{this.company}}**: {{this.primary_contact}} / {{this.backup_contact}}
+  {{/each}}
+  
+  ---
+  **レポート情報**
+  - 作成日時: {{meta.timestamp}}
+  - ドメイン: ticket_management
+  - エージェント: SlackTicketAgent
+  - 分類: 残チケット集約・進捗管理
+  - 次回レポート予定: {{next_report_schedule}}
 
 # ======== エラーハンドリング ========
 
