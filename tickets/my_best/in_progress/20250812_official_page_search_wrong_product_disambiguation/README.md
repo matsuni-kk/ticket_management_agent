@@ -7,13 +7,16 @@ reporter: "Kano Sakuma"
 create_date: "2025-08-12"
 update_date: "2025-08-12"
 deadline: ""
-status: "新規"
+status: "保留"
 category: "技術的問題"
 priority: "中"
 assigned_to: "未割り当て"
 owner: "担当者未決定"
-next_action: "ワークフローDSLと検索ノード設定の確認・検証計画の作成"
+next_action: "先方環境での再検証結果待ち（返答待ち）"
+ball_holder: "先方"
 estimated_hours: "TBD"
+issued_at: "2025-08-12"
+due_date: ""
 ---
 
 ## サマリー

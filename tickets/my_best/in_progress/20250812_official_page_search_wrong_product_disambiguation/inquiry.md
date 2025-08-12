@@ -7,6 +7,9 @@ date: "2025-08-12"
 status: "新規"
 category: "技術的問題"
 priority: "中"
+issued_at: "2025-08-12"
+due_date: ""
+ball_holder: "先方"
 ---
 
 # 新規問い合わせ: 公式ページ検索で誤った商品の情報が取得される

@@ -13,6 +13,9 @@ assigned_to: "國松"
 estimated_hours: "TBD"
 final_resolution_date: "2025-08-08"
 customer_confirmation: "対応完了確認済み"
+issued_at: "2025-08-08"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 ## サマリー

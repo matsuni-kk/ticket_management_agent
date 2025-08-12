@@ -5,6 +5,9 @@ analyst: "TicketManagement Agent"
 analysis_date: "2025-08-12"
 complexity: "中"
 tech_category: "情報検索/LLM検証/ワークフロー設計"
+issued_at: "2025-08-12"
+due_date: ""
+ball_holder: "当方"
 ---
 
 ## 技術分析（誤取得の構造）

@@ -5,6 +5,9 @@ analyst: "TicketManagement Agent"
 analysis_date: "2025-08-12"
 complexity: "中"
 tech_category: "プロンプト設計/検索クエリ/検証ルール"
+issued_at: "2025-08-12"
+due_date: ""
+ball_holder: "当方"
 ---
 
 ## 検索クエリの推奨テンプレ

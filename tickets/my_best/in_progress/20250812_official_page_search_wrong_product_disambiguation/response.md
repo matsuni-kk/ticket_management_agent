@@ -3,9 +3,11 @@ file_type: "response"
 ticket_id: "TKT-20250812-001"
 responder: "TicketManagement Agent"
 response_date: "2025-08-12"
- status: "進捗報告"
- resolution_status: "保留"
- ball_holder: "先方"
+status: "進捗報告"
+resolution_status: "保留"
+ball_holder: "先方"
+issued_at: "2025-08-12"
+due_date: ""
 ---
 
 坂間さん、ご相談ありがとうございます。誤取得の傾向を踏まえ、下記の方針で「精度の底上げ＋誤ヒットの明確な拒否」を実装するのが良いと考えます。

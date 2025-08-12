@@ -4,6 +4,9 @@ ticket_id: "TKT-20250806-001"
 date: "2025-08-06"
 source: "先方からの追加設定値"
 category: "初期設定・商材定義"
+issued_at: "2025-08-06"
+due_date: ""
+ball_holder: "先方"
 ---
 
 # 追加要件・設定値（原文保存）
