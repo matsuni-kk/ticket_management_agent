@@ -78,6 +78,27 @@ reporting_dashboard_questions:
     required: false
     placeholder: "例：優先度=高のみ, 特定顧客のみ, 技術サポートカテゴリのみ"
 
+# ======== 会社別レポート用 質問 ========
+
+company_reporting_questions:
+  - key: "report_type"
+    prompt: "会社別レポートの種類を選択してください："
+    type: "select"
+    options: ["週次レポート", "月次レポート"]
+    required: true
+
+  - key: "company_name"
+    prompt: "対象の会社名を入力（または選択）してください："
+    type: "text"
+    required: true
+    placeholder: "例：Acme, FooCorp など"
+
+  - key: "date_range"
+    prompt: "対象期間（週または月）を指定してください："
+    type: "text"
+    required: true
+    placeholder: "例：2025-W32, 2025-08（今月/先月でも可）"
+
 # ======== レポート・ダッシュボードプロセス ========
 
 reporting_dashboard_steps:
@@ -390,3 +411,66 @@ success_metrics:
   - "生成速度 < 3分"
   - "ユーザー満足度 > 4.5/5.0"
   - "意思決定貢献度 > 85%"
+
+# ======== 会社別レポート テンプレート ========
+
+company_reporting_template: |
+  ---
+  file_type: "company_analysis_report"
+  report_type: "{{report_type}}"
+  company: "{{company_name}}"
+  date_range: "{{date_range}}"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
+  # 会社別{{report_type}} - {{company_name}} - {{meta.timestamp}}
+
+  ## サマリー
+  - 期間: {{date_range}}
+  - 会社: {{company_name}}
+  - チケット総数: {{company.summary.total}} 件
+  - 解決済: {{company.summary.resolved}} 件
+  - 対応中: {{company.summary.in_progress}} 件
+  - 保留: {{company.summary.on_hold}} 件
+  - クローズ: {{company.summary.closed}} 件
+  - バックログ: {{company.summary.backlog}} 件
+  - 平均解決日数: {{company.summary.avg_resolution_days}} 日
+  - 平均初回応答時間: {{company.summary.avg_first_response_minutes}} 分
+
+  ## 内訳
+  ### ステータス別
+  | ステータス | 件数 |
+  |---|---|
+  | 新規 | {{breakdown.status.new}} |
+  | 対応中 | {{breakdown.status.in_progress}} |
+  | 保留 | {{breakdown.status.on_hold}} |
+  | 解決済 | {{breakdown.status.resolved}} |
+  | クローズ | {{breakdown.status.closed}} |
+
+  ### 優先度別
+  | 優先度 | 件数 |
+  |---|---|
+  | 緊急 | {{breakdown.priority.critical}} |
+  | 高 | {{breakdown.priority.high}} |
+  | 中 | {{breakdown.priority.medium}} |
+  | 低 | {{breakdown.priority.low}} |
+
+  ### カテゴリ別
+  {{#each breakdown.categories}}
+  - {{this.name}}: {{this.count}} 件
+  {{/each}}
+
+  ### 担当者別（上位）
+  {{#each breakdown.assignees}}
+  - {{this.name}}: {{this.count}} 件
+  {{/each}}
+
+  ## エイジング/期限
+  - 未解決の経過日数分布: 0-3日={{aging.bucket_0_3}}, 4-7日={{aging.bucket_4_7}}, 8-14日={{aging.bucket_8_14}}, 15日以上={{aging.bucket_15_plus}}
+  - 期限設定ありの未解決: 総数={{deadline.with_due_open}}, 期限超過={{deadline.overdue_open}}
+
+  ## 変更履歴（直近）
+  {{#each recent_updates}}
+  - {{this.ticket_id}}: {{this.title}}（{{this.update_date}}, 状態={{this.status}}）
+  {{/each}}

@@ -116,9 +116,59 @@ master_triggers:
         template_reference: "04_reporting.mdc => reporting_template"
         message: "分析レポートを生成中..."
         mandatory: true
+  - name: "completion_message"
+    action: "notify"
+    message: "**分析レポート生成完了。**\n\n保存先: `{{patterns.output_analysis_report}}`\n\n包括的分析結果と洞察を確認してください。"
+# =========================
+  # 4.1 会社別 週次レポート生成
+# =========================
+  - trigger: "(会社別 週次レポート|company weekly report)"
+    priority: medium
+    mode: "interactive"
+    steps:
+      - name: "start_message"
+        action: "message"
+        content: "**会社別 週次レポート生成を開始します。**\n\n各社の週次レポートを作成します。"
+      - name: "collect_existing_info"
+        action: "gather_existing_info"
+        message: "対象の会社情報を収集中..."
+      - name: "ask_company_weekly_questions"
+        action: "call .claude/agents/04_reporting.md => company_reporting_questions"
+        message: "会社名と対象週の指定をお願いします。"
+      - name: "create_company_weekly_report"
+        action: "create_markdown_file"
+        path: "{{patterns.company_weekly_report}}"
+        template_reference: "04_reporting.mdc => company_reporting_template"
+        message: "会社別の週次レポートを作成中..."
+        mandatory: true
       - name: "completion_message"
         action: "notify"
-        message: "**分析レポート生成完了。**\n\n保存先: `{{patterns.output_analysis_report}}`\n\n包括的分析結果と洞察を確認してください。"
+        message: "**会社別 週次レポート生成完了。**\n\n保存先: `{{patterns.company_weekly_report}}`"
+# =========================
+  # 4.2 会社別 月次レポート生成
+# =========================
+  - trigger: "(会社別 月次レポート|company monthly report)"
+    priority: medium
+    mode: "interactive"
+    steps:
+      - name: "start_message"
+        action: "message"
+        content: "**会社別 月次レポート生成を開始します。**\n\n各社の月次レポートを作成します。"
+      - name: "collect_existing_info"
+        action: "gather_existing_info"
+        message: "対象の会社情報を収集中..."
+      - name: "ask_company_monthly_questions"
+        action: "call .claude/agents/04_reporting.md => company_reporting_questions"
+        message: "会社名と対象月の指定をお願いします。"
+      - name: "create_company_monthly_report"
+        action: "create_markdown_file"
+        path: "{{patterns.company_monthly_report}}"
+        template_reference: "04_reporting.mdc => company_reporting_template"
+        message: "会社別の月次レポートを作成中..."
+        mandatory: true
+      - name: "completion_message"
+        action: "notify"
+        message: "**会社別 月次レポート生成完了。**\n\n保存先: `{{patterns.company_monthly_report}}`"
 # =========================
   # 5. 自動化ルール・通知設定
 # =========================
@@ -225,6 +275,12 @@ auto_triggers:
     auto_confirm: false
   - event: "daily_report_time"
     trigger: "レポート生成"
+    auto_confirm: false
+  - event: "weekly_report_time"
+    trigger: "会社別 週次レポート"
+    auto_confirm: false
+  - event: "monthly_report_time"
+    trigger: "会社別 月次レポート"
     auto_confirm: false
   - event: "daily_progress_check"
     trigger: "残チケット確認"
@@ -355,6 +411,7 @@ defaults:
       due_date: "YYYY-MM-DD"
       ball_holder: "当方/先方/共同/クローズ"
 
+
 # Ticket Management Agent Paths
 
 root: "/Users/username/workspace/ticket_management_agent"
@@ -395,6 +452,11 @@ patterns:
   tickets_dir: "{{tickets_root}}"
   reports_dir: "{{docs_root}}/reports"
   configs_dir: "{{docs_root}}/configs"
+  
+  # Company-specific reports
+  company_reports_dir: "{{reports_dir}}/{{company_name}}"
+  company_weekly_report: "{{company_reports_dir}}/weekly_{{env.NOW:date:YYYY-'W'WW}}.md"
+  company_monthly_report: "{{company_reports_dir}}/monthly_{{env.NOW:date:YYYY-MM}}.md"
   
   # Company and ticket patterns
   company_dir: "{{tickets_root}}/{{company_name}}"

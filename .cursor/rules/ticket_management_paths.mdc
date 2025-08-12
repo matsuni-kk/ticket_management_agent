@@ -45,6 +45,11 @@ patterns:
   reports_dir: "{{docs_root}}/reports"
   configs_dir: "{{docs_root}}/configs"
   
+  # Company-specific reports
+  company_reports_dir: "{{reports_dir}}/{{company_name}}"
+  company_weekly_report: "{{company_reports_dir}}/weekly_{{env.NOW:date:YYYY-'W'WW}}.md"
+  company_monthly_report: "{{company_reports_dir}}/monthly_{{env.NOW:date:YYYY-MM}}.md"
+  
   # Company and ticket patterns
   company_dir: "{{tickets_root}}/{{company_name}}"
   in_progress_dir: "{{company_dir}}/in_progress"
