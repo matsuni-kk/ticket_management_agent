@@ -135,6 +135,12 @@ slack_text_analysis_workflow:
 # ======== テンプレート ========
 
 ticket_creation_template: |
+  ---
+  file_type: "text_analysis_result"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
   # Slackテキスト解析結果 - {{meta.timestamp}}
   
   ## 📥 原文情報

@@ -7,11 +7,22 @@ alwaysApply: true
 
 path_reference: "ticket_management_paths.mdc"
 
+# =========================
+# AI注意事項 - AIが確実に守るべき指示
+# =========================
+ai_instructions:
+  - "すべてのルールは正確に実行し、独自の解釈で変更しないこと"
+  - "execute_shellアクションのコマンドは一切変更せずそのまま実行すること"
+  - "指定されたファイルパスやフォルダ構造を尊重し、勝手に構造を変更しないこと"
+  - "失敗した場合でも代替手段を取らず、失敗を報告してユーザーの指示を仰ぐこと"
+
 # ======== Ticket Management Agent マスタールール ========
 # チケット管理業務を効率化し、最適な顧客対応とワークフロー管理を提供
 
 master_triggers:
+# =========================
   # 1. テキスト解析・チケット生成 (Direct to Tickets)
+# =========================
   - trigger: "(text analysis|ticket generation|create ticket|analyze message|テキスト解析|チケット生成|新チケット)"
     priority: high
     mode: "interactive"
@@ -34,8 +45,9 @@ master_triggers:
       - name: "completion_message"
         action: "notify"
         message: "**チケット作成完了。**\n\n保存先: `{{patterns.ticket_folder}}`\n\n関連チケットとの連携情報も整理しました。"
-
+# =========================
   # 2. チケット分類・割り当て
+# =========================
   - trigger: "(ticket classification|classify ticket|assign ticket|prioritize|チケット分類|優先度付け)"
     priority: high
     mode: "interactive"
@@ -58,8 +70,9 @@ master_triggers:
       - name: "completion_message"
         action: "notify"
         message: "**チケット分類・割り当て完了。**\n\n保存先: `{{patterns.ticket_folder}}`\n\n分類結果と担当者配分をチケットに記録しました。"
-
+# =========================
   # 3. 進捗管理・ステータス更新
+# =========================
   - trigger: "(progress tracking|status update|track progress|update status|進捗管理|ステータス更新)"
     priority: medium
     mode: "interactive"
@@ -82,8 +95,9 @@ master_triggers:
       - name: "completion_message"
         action: "notify"
         message: "**進捗管理更新完了。**\n\n保存先: `{{patterns.ticket_folder}}`\n\n進捗状況と次のアクションをチケットに記録しました。"
-
+# =========================
   # 4. レポート・ダッシュボード生成
+# =========================
   - trigger: "(generate report|dashboard|reporting|analytics report|レポート生成|ダッシュボード)"
     priority: medium
     mode: "interactive"
@@ -106,8 +120,9 @@ master_triggers:
       - name: "completion_message"
         action: "notify"
         message: "**分析レポート生成完了。**\n\n保存先: `{{patterns.output_analysis_report}}`\n\n包括的分析結果と洞察を確認してください。"
-
+# =========================
   # 5. 自動化ルール・通知設定
+# =========================
   - trigger: "(automation setup|notification setup|automation rules|escalation|自動化設定|通知設定)"
     priority: low
     mode: "interactive"
@@ -130,32 +145,36 @@ master_triggers:
       - name: "completion_message"
         action: "notify"
         message: "**自動化設定完了。**\n\n保存先: `{{patterns.output_automation_config}}`\n\n設定内容を確認し、システムに適用してください。"
-
+# =========================
   # 6. タスク管理
+# =========================
   - trigger: "(今日のタスク作成|daily task|task作成)"
     priority: medium
     steps:
       - name: "create_daily_task"
         action: "call 90_task_management.mdc => create_daily_task"
         message: "日次タスクを作成します。"
-
+# =========================
   # 7. Flow to Stock 移行
+# =========================
   - trigger: "(Flow確定|Stock移動|確定版作成)"
     priority: medium
     steps:
       - name: "move_to_stock"
         action: "call 97_flow_to_stock_rules.mdc => flow_to_stock_process"
         message: "Flowコンテンツを確定版としてStockに移行します。"
-
+# =========================
   # 8. Flow支援
+# =========================
   - trigger: "(Flow支援|作業支援|draft支援)"
     priority: low
     steps:
       - name: "flow_assist"
         action: "call 98_flow_assist.mdc => provide_flow_assistance"
         message: "Flow作業の支援を提供します。"
-
+# =========================
   # 9. 残チケット集約・進捗管理
+# =========================
   - trigger: "(残チケット確認|未完了案件|daily progress|weekly progress|毎日の進捗|週次の進捗|残案件管理)"
     priority: high
     mode: "interactive"
@@ -181,17 +200,20 @@ master_triggers:
       - name: "completion_message"
         action: "notify"
         message: "**残チケット集約・進捗管理完了。**\n\n保存先: `{{patterns.bulk_progress_report}}`\n\n全未完了案件の状況と推奨アクションを確認してください。"
-
+# =========================
   # 10. ルールメンテナンス
+# =========================
   - trigger: "(ルール更新|rule update|ルールメンテナンス)"
     priority: low
     steps:
       - name: "rule_maintenance"
         action: "call 99_rule_maintenance.mdc => maintain_rules"
         message: "ルールの更新・メンテナンスを実行します。"
-
+１
 # ======== 共通設定 ========
+# =========================
 # 自動実行設定
+# =========================
 auto_triggers:
   - event: "ticket_created"
     trigger: "チケット分類"
@@ -215,40 +237,54 @@ auto_triggers:
     trigger: "Stock移動"
     auto_confirm: false
 
+# =========================
 # デフォルト設定
+# =========================
 defaults:
   language: "ja"
   encoding: "utf-8"
   timestamp_format: "YYYY-MM-DD-HHmm"
   
+# =========================
   # チケット管理デフォルト設定
+# =========================
   ticket_priority_levels: ["低", "中", "高", "緊急"]
   default_ticket_priority: "中"
   ticket_status_types: ["新規", "対応中", "保留", "解決済", "クローズ"]
   default_ticket_status: "新規"
   
+# =========================
   # 分類デフォルト設定
+# =========================
   classification_categories: ["技術的問題", "機能要望", "バグ報告", "サポート依頼", "その他"]
   assignment_method: "スキルベース"
   escalation_time: "24時間"
   
+# =========================
   # 進捗管理デフォルト設定
+# =========================
   progress_update_frequency: "daily"
   status_change_notification: true
   deadline_alert_advance: "3日前"
   
+# =========================
   # レポートデフォルト設定
+# =========================
   report_period: "月次"
   include_metrics: ["解決率", "平均対応時間", "顧客満足度"]
   chart_types: ["棒グラフ", "円グラフ", "時系列グラフ"]
   
+# =========================
   # 自動化デフォルト設定
+# =========================
   auto_assignment: false
   auto_escalation: true
   notification_channels: ["メール", "Slack"]
   working_hours: "9:00-18:00"
   
+# =========================
   # ファイル名統一規則設定
+# =========================
   standard_ticket_files:
     inquiry_file: "inquiry.md"      # 顧客からの問い合わせ内容
     response_file: "response.md"    # 提供した回答・解決策
@@ -256,7 +292,9 @@ defaults:
     technical_analysis_file: "technical_analysis.md"  # 技術的分析
     technical_details_file: "technical_details.md"   # 技術的詳細
   
+# =========================
   # ファイル命名規則の説明
+# =========================
   file_naming_convention:
     description: "チケット内ファイルの統一規則"
     rules:
@@ -265,7 +303,9 @@ defaults:
       - "README.md: チケットの概要とサマリー"
       - "technical_*.md: 技術的な分析・詳細情報"
   
+# =========================
   # フロントマター統一規則
+# =========================
   frontmatter_standards:
     description: "全チケットファイルに必須のメタデータ構造"
     inquiry_frontmatter:
@@ -274,9 +314,12 @@ defaults:
       company: "会社名"
       reporter: "報告者名"
       date: "YYYY-MM-DD"
-      status: "新規/対応中/解決済"
+      status: "新規/対応中/保留/解決済"
       category: "技術的問題/機能要望/バグ報告/サポート依頼/その他"
       priority: "低/中/高/緊急"
+      issued_at: "YYYY-MM-DD"
+      due_date: "YYYY-MM-DD"
+      ball_holder: "当方/先方/共同/クローズ"
     response_frontmatter:
       file_type: "response"
       ticket_id: "TKT-YYYYMMDD-XXX"
@@ -284,6 +327,9 @@ defaults:
       response_date: "YYYY-MM-DD"
       status: "初回回答/進捗報告/最終回答"
       resolution_status: "解決済/部分解決/対応中/保留"
+      issued_at: "YYYY-MM-DD"
+      due_date: "YYYY-MM-DD"
+      ball_holder: "当方/先方/共同/クローズ"
     readme_frontmatter:
       file_type: "ticket_summary"
       ticket_id: "TKT-YYYYMMDD-XXX"
@@ -292,10 +338,13 @@ defaults:
       reporter: "報告者名"
       create_date: "YYYY-MM-DD"
       update_date: "YYYY-MM-DD"
-      status: "新規/対応中/解決済/クローズ"
+      status: "新規/対応中/保留/解決済/クローズ"
       category: "技術的問題/機能要望/バグ報告/サポート依頼/その他"
       priority: "低/中/高/緊急"
       assigned_to: "担当者名"
+      issued_at: "YYYY-MM-DD"
+      due_date: "YYYY-MM-DD"
+      ball_holder: "当方/先方/共同/クローズ"
     technical_frontmatter:
       file_type: "technical_analysis or technical_details"
       ticket_id: "TKT-YYYYMMDD-XXX"
@@ -303,3 +352,6 @@ defaults:
       analysis_date: "YYYY-MM-DD"
       complexity: "低/中/高"
       tech_category: "技術カテゴリ"
+      issued_at: "YYYY-MM-DD"
+      due_date: "YYYY-MM-DD"
+      ball_holder: "当方/先方/共同/クローズ"

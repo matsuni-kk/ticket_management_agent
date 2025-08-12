@@ -7,6 +7,9 @@ status: "最終回答"
 resolution_status: "解決済"
 response_type: "根本原因解決"
 solution_type: "設定変更・分岐条件修正"
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # 解決策の提供 - EC商品順位誤認識問題

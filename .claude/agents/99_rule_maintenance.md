@@ -7,6 +7,12 @@ description: SlackTicket Rule Maintenance
 
 maintain_rules:
   template: |
+    ---
+    file_type: "rule_maintenance_log"
+    generated_at: "{{env.NOW:datetime:YYYY-MM-DD HH:mm:ss}}"
+    domain: "ticket_management"
+    agent: "TicketManagement"
+    ---
     # Rule Maintenance Log - {{env.NOW:date:YYYY-MM-DD}}
     
     ## Agent: SlackTicket

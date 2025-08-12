@@ -7,6 +7,9 @@ status: "最終回答"
 resolution_status: "解決済"
 response_type: "解決策提示"
 solution_type: "アーキテクチャ変更・処理フロー改善"
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # matsuni からの回答内容

@@ -8,6 +8,13 @@ alwaysApply: true
 
 create_daily_task:
   template: |
+    ---
+    file_type: "daily_tasks"
+    date: "{{env.NOW:date:YYYY-MM-DD}}"
+    generated_at: "{{env.NOW:datetime:YYYY-MM-DD HH:mm:ss}}"
+    domain: "ticket_management"
+    agent: "TicketManagement"
+    ---
     # Daily Tasks - {{env.NOW:date:YYYY-MM-DD}}
     
     ## ticket_management Domain Tasks

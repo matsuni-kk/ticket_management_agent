@@ -7,6 +7,9 @@ complexity: "中"
 tech_category: "WebスクレイピングAPI"
 tools_used: ["Dify", "ECサイトAPI"]
 error_types: ["503エラー", "アクセス制限"]
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # 技術詳細情報

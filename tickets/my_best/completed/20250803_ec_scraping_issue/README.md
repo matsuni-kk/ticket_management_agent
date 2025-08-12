@@ -14,6 +14,9 @@ related_members: ["miyatti", "maru-san", "Minami Sasaki"]
 estimated_hours: 4
 final_resolution_date: "2025-08-03"
 customer_confirmation: "安定して動作確認済み"
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # チケット: ECサイトスクレイピングの不安定問題

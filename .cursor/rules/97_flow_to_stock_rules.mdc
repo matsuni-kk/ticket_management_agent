@@ -14,6 +14,14 @@ flow_to_stock_process:
     - archive_previous
   
   template: |
+    ---
+    file_type: "stock_document"
+    stage: "finalization"
+    version: "v1.0"
+    generated_at: "{{env.NOW:datetime:YYYY-MM-DD HH:mm:ss}}"
+    domain: "ticket_management"
+    agent: "TicketManagement"
+    ---
     # Document Finalization - {{env.NOW:date:YYYY-MM-DD}}
     
     ## Document Information

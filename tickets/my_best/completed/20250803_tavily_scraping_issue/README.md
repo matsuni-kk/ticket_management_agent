@@ -13,6 +13,9 @@ priority: "中"
 assigned_to: "matsuni"
 related_members: ["Kaho Nagaso", "matsuni"]
 estimated_hours: 6
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # チケット: 価格.com Tavily抽出でコンテンツ取得不完全問題

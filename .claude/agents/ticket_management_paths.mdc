@@ -80,6 +80,9 @@ patterns:
     status: "{{status}}"
     category: "{{category}}"
     priority: "{{priority}}"
+    issued_at: "{{date}}"
+    due_date: ""
+    ball_holder: "当方"
     ---
   
   response_template: |
@@ -90,6 +93,9 @@ patterns:
     response_date: "{{response_date}}"
     status: "{{response_status}}"
     resolution_status: "{{resolution_status}}"
+    issued_at: "{{response_date}}"
+    due_date: ""
+    ball_holder: "先方"
     ---
   
   readme_template: |
@@ -106,6 +112,9 @@ patterns:
     priority: "{{priority}}"
     assigned_to: "{{assigned_to}}"
     estimated_hours: "{{estimated_hours}}"
+    issued_at: "{{create_date}}"
+    due_date: ""
+    ball_holder: "当方"
     ---
   
   technical_template: |
@@ -116,6 +125,9 @@ patterns:
     analysis_date: "{{analysis_date}}"
     complexity: "{{complexity}}"
     tech_category: "{{tech_category}}"
+    issued_at: "{{analysis_date}}"
+    due_date: ""
+    ball_holder: "当方"
     ---
 
 meta:

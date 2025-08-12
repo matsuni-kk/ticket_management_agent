@@ -8,6 +8,9 @@ tech_category: "WebスクレイピングAPI・ワークフロー設計"
 tools_used: ["Tavily", "価格.com", "スクレイピングシステム"]
 root_cause: "Tavilyの機能特性と要件のミスマッチ"
 solution_complexity: "中"
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # 技術的分析 - 価格.com Tavily抽出問題

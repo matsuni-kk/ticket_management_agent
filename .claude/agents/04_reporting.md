@@ -141,6 +141,15 @@ reporting_dashboard_workflow:
 # ======== テンプレート ========
 
 reporting_dashboard_template: |
+  ---
+  file_type: "analysis_report"
+  report_type: "{{report_type}}"
+  date_range: "{{date_range}}"
+  target_audience: "{{target_audience}}"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
   # チケット管理分析レポート - {{meta.timestamp}}
   
   ## 📊 エグゼクティブサマリー
@@ -306,6 +315,31 @@ reporting_dashboard_template: |
   - ドメイン: ticket_management
   - エージェント: SlackTicketAgent
   - 分類: レポート・分析・ダッシュボード
+
+reporting_template: |
+  ---
+  file_type: "analysis_report"
+  report_type: "{{report_type}}"
+  date_range: "{{date_range}}"
+  target_audience: "{{target_audience}}"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
+  # チケット管理分析レポート - {{meta.timestamp}}
+  
+  ## 📊 エグゼクティブサマリー
+  **期間**: {{date_range}}
+  **対象**: {{target_audience}}
+  **レポート種別**: {{report_type}}
+  **生成日時**: {{meta.timestamp}}
+  **レポート保存先**: {{docs_root}}/reports/{{meta.date:YYYY-MM-DD}}_{{report_type}}.md
+  
+  ### 主要指標サマリー
+  - **総チケット数**: {{summary.total_tickets}}件 ({{summary.ticket_change}}%)
+  - **平均解決時間**: {{summary.avg_resolution_time}}時間 ({{summary.resolution_change}}%)
+  - **SLA遵守率**: {{summary.sla_compliance}}% ({{summary.sla_change}}%)
+  - **顧客満足度**: {{summary.customer_satisfaction}}/5.0 ({{summary.satisfaction_change}})
 
 # ======== エラーハンドリング ========
 

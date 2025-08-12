@@ -7,6 +7,13 @@ description: SlackTicket Flow Assistance
 
 provide_flow_assistance:
   template: |
+    ---
+    file_type: "flow_assistance_report"
+    status: "in_progress"
+    generated_at: "{{env.NOW:datetime:YYYY-MM-DD HH:mm:ss}}"
+    domain: "ticket_management"
+    agent: "TicketManagement"
+    ---
     # Flow Assistance Report - {{env.NOW:date:YYYY-MM-DD}}
     
     ## Document Assessment

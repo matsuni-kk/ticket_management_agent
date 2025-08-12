@@ -8,6 +8,9 @@ tech_category: "データフロー・条件分岐"
 tools_used: ["Dify", "プロンプトエンジニアリング"]
 root_cause: "条件分岐の論理エラー"
 solution_complexity: "中"
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # 技術的分析 - EC商品順位誤認識問題

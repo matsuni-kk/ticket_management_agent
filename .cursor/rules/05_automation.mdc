@@ -141,6 +141,15 @@ automation_rules_workflow:
 # ======== テンプレート ========
 
 automation_rules_template: |
+  ---
+  file_type: "automation_config"
+  automation_type: "{{automation_type}}"
+  status: "{{automation.status}}"
+  execution_mode: "{{automation.execution_mode}}"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
   # 自動化ルール設定・実行レポート - {{meta.timestamp}}
   
   ## ⚙️ 自動化概要
@@ -310,6 +319,25 @@ automation_rules_template: |
   - ドメイン: ticket_management
   - エージェント: SlackTicketAgent
   - 分類: 自動化・通知・エスカレーション
+
+# エイリアス（互換性のため）
+automation_template: |
+  ---
+  file_type: "automation_config"
+  automation_type: "{{automation_type}}"
+  status: "{{automation.status}}"
+  execution_mode: "{{automation.execution_mode}}"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
+  # 自動化ルール設定・実行レポート - {{meta.timestamp}}
+  
+  ## ⚙️ 自動化概要
+  **自動化種別**: {{automation_type}}
+  **設定日時**: {{meta.timestamp}}
+  **ステータス**: {{automation.status}}
+  **実行モード**: {{automation.execution_mode}}
 
 # ======== エラーハンドリング ========
 

@@ -180,6 +180,14 @@ progress_tracking_workflow:
 # ======== テンプレート ========
 
 progress_tracking_template: |
+  ---
+  file_type: "progress_report"
+  ticket_id: "{{ticket_id}}"
+  scope: "single_ticket"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
   # 進捗管理レポート - {{meta.timestamp}}
   
   ## 🎫 チケット概要
@@ -324,7 +332,168 @@ progress_tracking_template: |
 # ======== 残チケット集約・一括進捗管理テンプレート ========
 
 bulk_progress_template: |
+  ---
+  file_type: "bulk_progress_report"
+  report_scope: "{{report_scope}}"
+  target_status: "{{target_status}}"
+  priority_filter: "{{priority_filter}}"
+  company_filter: "{{company_filter}}"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
   # 残チケット集約・進捗管理レポート - {{meta.timestamp}}
+
+# エイリアス（互換性のため）
+tracking_template: |
+  ---
+  file_type: "progress_report"
+  ticket_id: "{{ticket_id}}"
+  scope: "single_ticket"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
+  # 進捗管理レポート - {{meta.timestamp}}
+  
+  ## 🎫 チケット概要
+  **チケットID**: {{ticket_id}}
+  **会社名**: {{ticket.company_name}}
+  **チケットパス**: tickets/{{ticket.company_name}}/{{ticket.status_folder}}/{{ticket.folder_name}}
+  **現在のステータス**: {{current_status}}
+  **最終更新**: {{meta.timestamp}}
+  **追跡開始日**: {{tracking.start_date}}
+  
+  ### チケット内ファイル構成（統一規則・フロントマター付き）
+  
+  #### 進捗管理用フロントマター更新
+  
+  ##### README.md（進捗状況を反映）
+  ```yaml
+  ---
+  file_type: "ticket_summary"
+  ticket_id: "{{ticket_id}}"
+  status: "{{current_status}}"
+  update_date: "{{meta.timestamp:YYYY-MM-DD}}"
+  progress_percentage: "{{completion_percentage}}"
+  last_action: "{{latest_update_summary}}"
+  next_action: "{{next_steps}}"
+  assigned_to: "{{current_assignee}}"
+  ---
+  ```
+  
+  ##### response.md（進捗に応じて更新）
+  ```yaml
+  ---
+  file_type: "response"
+  ticket_id: "{{ticket_id}}"
+  responder: "{{responder_name}}"
+  response_date: "{{meta.timestamp:YYYY-MM-DD}}"
+  status: "進捗報告"
+  resolution_status: "{{tracking.current_resolution_status}}"
+  progress_note: "{{progress_summary}}"
+  ---
+  ```
+  
+  ## 📊 進捗状況
+  
+  ### 完了度
+  - **全体進捗**: {{completion_percentage}}%
+  - **予定完了度**: {{tracking.expected_progress}}%
+  - **進捗偏差**: {{tracking.progress_variance}}%
+  - **トレンド**: {{tracking.progress_trend}}
+  
+  ### マイルストーン達成状況
+  {{#each milestones}}
+  - **{{this.name}}**: {{this.status}} ({{this.completion_date}})
+  {{/each}}
+  
+  ## 📝 作業詳細
+  
+  ### 最新の作業内容
+  {{progress_update}}
+  
+  ### 完了事項
+  {{#each completed_tasks}}
+  - ✅ {{this.description}} ({{this.completion_date}})
+  {{/each}}
+  
+  ### 進行中の作業
+  {{#each ongoing_tasks}}
+  - 🔄 {{this.description}} (進捗: {{this.progress}}%)
+  {{/each}}
+  
+  ## ⚠️ 課題・ブロッカー
+  
+  ### 現在の課題
+  {{issues_blockers}}
+  
+  ### 影響度分析
+  - **スケジュール影響**: {{analysis.schedule_impact}}
+  - **品質影響**: {{analysis.quality_impact}}
+  - **コスト影響**: {{analysis.cost_impact}}
+  - **リスクレベル**: {{analysis.risk_level}}
+  
+  ## 🔮 予測・見通し
+  
+  ### 完了予測
+  - **予測完了日**: {{estimated_completion}}
+  - **信頼度**: {{prediction.confidence_level}}%
+  - **遅延リスク**: {{prediction.delay_probability}}%
+  - **追加リソース要否**: {{prediction.additional_resources}}
+  
+  ### 次のマイルストーン
+  - **次の節目**: {{next_milestone.name}}
+  - **予定達成日**: {{next_milestone.target_date}}
+  - **準備状況**: {{next_milestone.readiness}}%
+  - **必要アクション**: {{next_milestone.required_actions}}
+  
+  ## 🎯 次のアクション
+  
+  ### 即座対応（24時間以内）
+  {{next_actions}}
+  
+  ### 短期計画（3日以内）
+  {{#each short_term_actions}}
+  - {{this.description}} (担当: {{this.assignee}})
+  {{/each}}
+  
+  ### 中期計画（1週間以内）
+  {{#each medium_term_actions}}
+  - {{this.description}} (期限: {{this.deadline}})
+  {{/each}}
+  
+  ## 📞 コミュニケーション
+  
+  ### ステークホルダー通知
+  - **顧客報告**: {{communication.customer_update}}
+  - **チーム共有**: {{communication.team_update}}
+  - **管理層報告**: {{communication.management_update}}
+  
+  ### フォローアップスケジュール
+  - **次回確認**: {{followup.next_check}}
+  - **週次レビュー**: {{followup.weekly_review}}
+  - **完了確認**: {{followup.completion_check}}
+  
+  ## 📈 パフォーマンス指標
+  
+  ### 効率性指標
+  - **処理速度**: {{metrics.processing_speed}}
+  - **品質スコア**: {{metrics.quality_score}}
+  - **顧客満足度**: {{metrics.customer_satisfaction}}
+  - **チーム効率**: {{metrics.team_efficiency}}
+  
+  ### 改善提案
+  - **効率化**: {{suggestions.efficiency}}
+  - **品質向上**: {{suggestions.quality}}
+  - **プロセス改善**: {{suggestions.process}}
+  
+  ---
+  **文書情報**
+  - 作成日: {{meta.timestamp}}
+  - ドメイン: ticket_management
+  - エージェント: SlackTicketAgent
+  - 分類: 進捗管理・追跡
   
   ## 📋 レポート概要
   **レポート範囲**: {{report_scope}}

@@ -4,10 +4,13 @@ ticket_id: "TKT-20250803-005"
 company: "My Best"
 reporter: "Kaho Nagaso"
 date: "2025-08-03"
-status: "対応中"
+status: "解決済"
 category: "技術的問題"
 priority: "中"
 related_systems: ["Tavily", "価格.com", "スクレイピングシステム"]
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # 問い合わせ内容 - 価格.com Tavily抽出問題

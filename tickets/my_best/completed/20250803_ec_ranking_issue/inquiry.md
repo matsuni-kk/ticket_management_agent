@@ -2,12 +2,15 @@
 file_type: "inquiry"
 ticket_id: "TKT-20250803-004"
 company: "My Best"
-reporter: "Kaho Nagaso"
+reporter: "My Best（チーム）"
 date: "2025-08-03"
-status: "対応中"
+status: "解決済"
 category: "バグ報告"
 priority: "高"
 related_systems: ["Dify", "Amazon", "EC順位取得システム"]
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # 問い合わせ内容 - EC商品順位誤認識問題

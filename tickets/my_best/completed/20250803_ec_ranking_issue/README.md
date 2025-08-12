@@ -15,6 +15,9 @@ assigned_to: "技術チーム"
 estimated_hours: 3
 resolution_date: "2025-08-03"
 related_systems: ["Dify", "Amazon", "EC順位取得システム"]
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # チケット: EC商品順位取得の誤認識問題

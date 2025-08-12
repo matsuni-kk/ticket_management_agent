@@ -135,6 +135,13 @@ ticket_classification_workflow:
 # ======== テンプレート ========
 
 ticket_classification_template: |
+  ---
+  file_type: "ticket_classification"
+  ticket_id: "{{ticket.id}}"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
   # チケット分類・割り当て結果 - {{meta.timestamp}}
   
   ## 🎫 チケット基本情報
@@ -242,6 +249,58 @@ ticket_classification_template: |
   - ドメイン: ticket_management
   - エージェント: SlackTicketAgent
   - 分類: チケット分類・割り当て
+
+# エイリアス（互換性のため）
+classification_template: |
+  ---
+  file_type: "ticket_classification"
+  ticket_id: "{{ticket.id}}"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
+  # チケット分類・割り当て結果 - {{meta.timestamp}}
+  
+  ## 🎫 チケット基本情報
+  **チケットID**: {{ticket.id}}
+  **タイトル**: {{ticket.title}}
+  **会社名**: {{ticket.company_name}}
+  **チケットパス**: tickets/{{ticket.company_name}}/in_progress/{{meta.date:YYYYMMDD}}_{{ticket.folder_name}}
+  **受信日時**: {{ticket.created_at}}
+  **処理日時**: {{meta.timestamp}}
+  
+  ### チケット内ファイル構成（統一規則・フロントマター付き）
+  
+  #### 各ファイルの標準フロントマター
+  - **inquiry.md**: `file_type: "inquiry"` + 問い合わせメタデータ
+  - **response.md**: `file_type: "response"` + 回答メタデータ  
+  - **README.md**: `file_type: "ticket_summary"` + チケット概要メタデータ
+  - **technical_analysis.md**: `file_type: "technical_analysis"` + 技術分析メタデータ
+  - **technical_details.md**: `file_type: "technical_details"` + 技術詳細メタデータ
+  
+  #### 分類後更新フロントマター例
+  ```yaml
+  ---
+  file_type: "ticket_summary"
+  ticket_id: "{{ticket.id}}"
+  title: "{{ticket.title}}"
+  company: "{{ticket.company_name}}"
+  status: "{{classification.assigned_status}}"
+  category: "{{classification.technical_category}}"
+  priority: "{{priority.final_priority}}"
+  assigned_to: "{{assignment.primary_assignee}}"
+  estimated_hours: "{{prediction.estimated_hours}}"
+  sla_deadline: "{{sla.resolution_target}}"
+  ---
+  ```
+  
+  ## 📊 分類結果
+  
+  ### 多次元分類
+  - **技術カテゴリ**: {{classification.technical_category}}
+  - **業務カテゴリ**: {{classification.business_category}}
+  - **影響範囲**: {{classification.impact_scope}}
+  - **処理パターン**: {{classification.process_pattern}}
 
 # ======== エラーハンドリング ========
 

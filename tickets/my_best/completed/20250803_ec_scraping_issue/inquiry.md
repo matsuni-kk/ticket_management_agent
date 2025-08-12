@@ -8,6 +8,9 @@ status: "解決済"
 category: "技術的問題"
 priority: "中"
 related_members: ["miyatti", "maru-san", "Minami Sasaki"]
+issued_at: "2025-08-03"
+due_date: ""
+ball_holder: "クローズ"
 ---
 
 # 問い合わせ内容 - ECサイトスクレイピング問題
