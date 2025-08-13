@@ -257,6 +257,17 @@ progress_tracking_template: |
   - 🔄 {{this.description}} (進捗: {{this.progress}}%)
   {{/each}}
   
+  ## 🧭 原因・解決
+  
+  ### 原因（現時点の仮説/確定）
+  {{root_cause}}
+  
+  ### 解決方法（実施手順・設定値）
+  {{resolution_steps}}
+  
+  ### 検証結果・顧客確認
+  {{verification_notes}}
+  
   ## ⚠️ 課題・ブロッカー
   
   ### 現在の課題
@@ -329,22 +340,7 @@ progress_tracking_template: |
   - エージェント: SlackTicketAgent
   - 分類: 進捗管理・追跡
 
-# ======== 残チケット集約・一括進捗管理テンプレート ========
-
-bulk_progress_template: |
-  ---
-  file_type: "bulk_progress_report"
-  report_scope: "{{report_scope}}"
-  target_status: "{{target_status}}"
-  priority_filter: "{{priority_filter}}"
-  company_filter: "{{company_filter}}"
-  generated_at: "{{meta.timestamp}}"
-  domain: "ticket_management"
-  agent: "TicketManagement"
-  ---
-  # 残チケット集約・進捗管理レポート - {{meta.timestamp}}
-
-# エイリアス（互換性のため）
+# 互換テンプレート（元の名称を維持）
 tracking_template: |
   ---
   file_type: "progress_report"
@@ -423,6 +419,17 @@ tracking_template: |
   - 🔄 {{this.description}} (進捗: {{this.progress}}%)
   {{/each}}
   
+  ## 🧭 原因・解決
+  
+  ### 原因（現時点の仮説/確定）
+  {{root_cause}}
+  
+  ### 解決方法（実施手順・設定値）
+  {{resolution_steps}}
+  
+  ### 検証結果・顧客確認
+  {{verification_notes}}
+  
   ## ⚠️ 課題・ブロッカー
   
   ### 現在の課題
@@ -493,6 +500,38 @@ tracking_template: |
   - 作成日: {{meta.timestamp}}
   - ドメイン: ticket_management
   - エージェント: SlackTicketAgent
+  - 分類: 進捗管理・追跡
+# ======== 残チケット集約・一括進捗管理テンプレート ========
+
+bulk_progress_template: |
+  ---
+  file_type: "bulk_progress_report"
+  report_scope: "{{report_scope}}"
+  target_status: "{{target_status}}"
+  priority_filter: "{{priority_filter}}"
+  company_filter: "{{company_filter}}"
+  generated_at: "{{meta.timestamp}}"
+  domain: "ticket_management"
+  agent: "TicketManagement"
+  ---
+  # 残チケット集約・進捗管理レポート - {{meta.timestamp}}
+
+  ## チケット一覧（表形式）
+
+  ### 完了チケット（解決済/クローズ）
+  | Ticket ID | タイトル | 会社 | 優先度 | カテゴリ | 担当 | 作成日 | 解決日 | ステータス | パス |
+  |---|---|---|---|---|---|---|---|---|---|
+  {{#each tickets.completed}}
+  | {{this.ticket_id}} | {{this.title}} | {{this.company}} | {{this.priority}} | {{this.category}} | {{this.assigned_to}} | {{this.create_date}} | {{this.resolution_date}} | {{this.status}} | {{this.path}} |
+  {{/each}}
+
+  ### 未完了チケット（新規/対応中/保留）
+  | Ticket ID | タイトル | 会社 | 優先度 | カテゴリ | 担当 | 作成日 | 更新日 | 期限 | ステータス | 経過日数 | パス |
+  |---|---|---|---|---|---|---|---|---|---|---|---|
+  {{#each tickets.open}}
+  | {{this.ticket_id}} | {{this.title}} | {{this.company}} | {{this.priority}} | {{this.category}} | {{this.assigned_to}} | {{this.create_date}} | {{this.update_date}} | {{this.due_date}} | {{this.status}} | {{this.age_days}} | {{this.path}} |
+  {{/each}}
+
   - 分類: 進捗管理・追跡
   
   ## 📋 レポート概要
@@ -647,6 +686,15 @@ tracking_template: |
   - エージェント: SlackTicketAgent
   - 分類: 残チケット集約・進捗管理
   - 次回レポート予定: {{next_report_schedule}}
+
+# ======== 内容理解ベース抽出ガイドライン（テンプレート） ========
+
+bulk_progress_extraction_guidelines_template: |
+  ## 原因/解決方法のセマンティック要約ポリシー
+  - 見出し語（原因/解決策/修正方法 など）や装飾は除去し、本文の因果と処置を1行に要約。
+  - 見出しが無い場合も本文・responseから因果関係と実施手段（動詞+対象+手段）を推定して要約。
+  - 箇条書きは先頭2項目を統合要約（最大160文字）。
+  - ノイズ（「…の提供 - …」等の見出し断片）は除去。原因=解決方法となる場合はresponse 本文で補完し差異を確保。
 
 # ======== エラーハンドリング ========
 

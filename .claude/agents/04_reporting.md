@@ -412,6 +412,17 @@ success_metrics:
   - "ユーザー満足度 > 4.5/5.0"
   - "意思決定貢献度 > 85%"
 
+# ======== 抽出ガイドライン（テンプレート） ========
+
+company_reporting_extraction_guidelines_template: |
+  ## 出力フィールド抽出ルール（要約方針）
+  - 詳細（{{this.details}}）: README「サマリー/概要」本文を内容理解で要約。無ければ本文先頭→inquiry先頭。見出し語/装飾を除去し最大160文字。
+  - 依頼者（{{this.requester}}）: READMEのreporter→無ければinquiryのreporter。
+  - 原因（{{this.cause_summary}}）: 「原因/原因判明」配下が無い場合も本文から因果を推定し1行に要約。見出し語は除去。
+  - 解決方法（{{this.solution_summary}}）: 見出しの有無に関わらず、実施手段（動詞+対象+手段）を優先して要約。箇条書きは先頭2項目を要約統合し最大160文字。例: 日本語対応Embeddingで全量再埋め込み + インデックス再構築 + 検索設定再調整(top_k/閾値/ハイブリッド/Rerank)。
+  - ノイズ抑止: 「…の提供 - …」等の見出し断片・定型語は削除。原因と解決方法が同一になりそうな場合はresponse本文から補完して差異を確保。
+  - 正規化: プレーンテキスト化（改行・過剰スペース除去、コード/引用は省略）。
+
 # ======== 会社別レポート テンプレート ========
 
 company_reporting_template: |
@@ -473,4 +484,39 @@ company_reporting_template: |
   ## 変更履歴（直近）
   {{#each recent_updates}}
   - {{this.ticket_id}}: {{this.title}}（{{this.update_date}}, 状態={{this.status}}）
+  {{/each}}
+
+  ## チケット一覧（表形式）
+  
+  ### 完了チケット（解決済/クローズ）
+  | Ticket ID | タイトル | 詳細 | 依頼者 | 優先度 | カテゴリ | 担当 | 作成日 | 解決日 | ステータス | 原因 | 解決方法 | パス |
+  |---|---|---|---|---|---|---|---|---|---|---|---|---|
+  {{#each tickets.completed}}
+  | {{this.ticket_id}} | {{this.title}} | {{this.details}} | {{this.requester}} | {{this.priority}} | {{this.category}} | {{this.assigned_to}} | {{this.create_date}} | {{this.resolution_date}} | {{this.status}} | {{this.cause_summary}} | {{this.solution_summary}} | {{this.path}} |
+  {{/each}}
+  
+  ### 未完了チケット（新規/対応中/保留）
+  | Ticket ID | タイトル | 詳細 | 依頼者 | 優先度 | カテゴリ | 担当 | 作成日 | 更新日 | 期限 | ステータス | 原因 | 解決方法 | 経過日数 | パス |
+  |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+  {{#each tickets.open}}
+  | {{this.ticket_id}} | {{this.title}} | {{this.details}} | {{this.requester}} | {{this.priority}} | {{this.category}} | {{this.assigned_to}} | {{this.create_date}} | {{this.update_date}} | {{this.due_date}} | {{this.status}} | {{this.cause_summary}} | {{this.solution_summary}} | {{this.age_days}} | {{this.path}} |
+  {{/each}}
+
+# ======== 会社別レポート 表テンプレート（単体） ========
+
+company_reporting_table_template: |
+  ## チケット一覧（表形式）
+
+  ### 完了チケット（解決済/クローズ）
+  | Ticket ID | タイトル | 詳細 | 依頼者 | 優先度 | カテゴリ | 担当 | 作成日 | 解決日 | ステータス | 原因 | 解決方法 | パス |
+  |---|---|---|---|---|---|---|---|---|---|---|---|---|
+  {{#each tickets.completed}}
+  | {{this.ticket_id}} | {{this.title}} | {{this.details}} | {{this.requester}} | {{this.priority}} | {{this.category}} | {{this.assigned_to}} | {{this.create_date}} | {{this.resolution_date}} | {{this.status}} | {{this.cause_summary}} | {{this.solution_summary}} | {{this.path}} |
+  {{/each}}
+
+  ### 未完了チケット（新規/対応中/保留）
+  | Ticket ID | タイトル | 詳細 | 依頼者 | 優先度 | カテゴリ | 担当 | 作成日 | 更新日 | 期限 | ステータス | 原因 | 解決方法 | 経過日数 | パス |
+  |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+  {{#each tickets.open}}
+  | {{this.ticket_id}} | {{this.title}} | {{this.details}} | {{this.requester}} | {{this.priority}} | {{this.category}} | {{this.assigned_to}} | {{this.create_date}} | {{this.update_date}} | {{this.due_date}} | {{this.status}} | {{this.cause_summary}} | {{this.solution_summary}} | {{this.age_days}} | {{this.path}} |
   {{/each}}

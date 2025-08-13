@@ -14,6 +14,8 @@ ai_instructions:
   - "execute_shellアクションのコマンドは一切変更せずそのまま実行すること"
   - "指定されたファイルパスやフォルダ構造を尊重し、勝手に構造を変更しないこと"
   - "失敗した場合でも代替手段を取らず、失敗を報告してユーザーの指示を仰ぐこと"
+  - "文字列のコピペではなく、内容理解に基づくセマンティック要約を行うこと（見出し語・装飾・不要断片は除去）"
+  - "原因/解決方法は明示見出しが無くても本文から因果と具体的処置を推定し1行に要約すること"
 
 # ======== Ticket Management Agent マスタールール ========
 # チケット管理業務を効率化し、最適な顧客対応とワークフロー管理を提供
@@ -88,7 +90,7 @@ master_triggers:
       - name: "update_progress_direct"
         action: "update_ticket_progress"
         path: "{{patterns.ticket_folder}}"
-        template_reference: "03_tracking.mdc => tracking_template"
+        template_reference: "03_tracking.mdc => progress_tracking_template"
         message: "進捗状況を直接チケットに更新中..."
         mandatory: true
       - name: "completion_message"
@@ -510,6 +512,15 @@ patterns:
     due_date: ""
     ball_holder: "先方"
     ---
+    
+    ## 原因
+    {{root_cause}}
+    
+    ## 解決方法
+    {{resolution_steps}}
+    
+    ## 顧客確認・検証結果
+    {{customer_confirmation}}
   
   readme_template: |
     ---
@@ -529,6 +540,18 @@ patterns:
     due_date: ""
     ball_holder: "当方"
     ---
+    
+    ## サマリー
+    {{summary}}
+    
+    ## 原因（判明している範囲／仮説）
+    {{root_cause}}
+    
+    ## 解決方法（実施手順・設定値）
+    {{resolution_steps}}
+    
+    ## 再発防止・運用メモ
+    {{preventive_measures}}
   
   technical_template: |
     ---
@@ -542,6 +565,27 @@ patterns:
     due_date: ""
     ball_holder: "当方"
     ---
+
+    ## 概要
+    {{analysis_summary}}
+
+    ## 現象
+    {{observed_symptoms}}
+
+    ## 再現手順
+    {{reproduction_steps}}
+
+    ## 原因（分析・仮説/確定）
+    {{root_cause}}
+
+    ## 解決方法（実施手順・設定値）
+    {{resolution_steps}}
+
+    ## 検証結果・ログ
+    {{verification_notes}}
+
+    ## 再発防止・運用メモ
+    {{preventive_measures}}
 
 meta:
   agent_name: "TicketManagement"

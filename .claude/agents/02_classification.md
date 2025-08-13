@@ -231,6 +231,10 @@ ticket_classification_template: |
   - **予防策**: {{suggestions.prevention_measures}}
   - **類似事例**: {{suggestions.similar_cases}}
   
+  ## 📝 原因・暫定対処（簡潔）
+  - 原因メモ: {{root_cause_memo}}
+  - 暫定対処: {{provisional_measures}}
+  
   ## 🔄 次のアクション
   
   ### 即座実行項目
@@ -301,6 +305,10 @@ classification_template: |
   - **業務カテゴリ**: {{classification.business_category}}
   - **影響範囲**: {{classification.impact_scope}}
   - **処理パターン**: {{classification.process_pattern}}
+  
+  ## 📝 原因・暫定対処（簡潔）
+  - 原因メモ: {{root_cause_memo}}
+  - 暫定対処: {{provisional_measures}}
 
 # ======== エラーハンドリング ========
 

@@ -237,6 +237,15 @@ ticket_creation_template: |
   
   **成功基準**:
   {{generated.success_criteria}}
+
+  ### 原因（判明している範囲／仮説）
+  {{generated.root_cause}}
+
+  ### 解決方法（実施手順・設定値）
+  {{generated.resolution_steps}}
+
+  ### 再発防止・運用メモ
+  {{generated.preventive_measures}}
   
   ### 関連情報
   - **関連チケット**: {{existing_tickets}}

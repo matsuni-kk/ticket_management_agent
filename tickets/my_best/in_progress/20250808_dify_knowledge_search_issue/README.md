@@ -5,8 +5,8 @@ title: "Difyナレッジの検索精度低下/ヒットしない問題"
 company: "マイベスト"
 reporter: "Kyohei Katada (Kata Kyo)"
 create_date: "2025-08-08"
-update_date: "2025-08-08"
-status: "解決済"
+update_date: "2025-08-13"
+status: "クローズ"
 category: "技術的問題"
 priority: "高"
 assigned_to: "國松"
@@ -66,3 +66,12 @@ Dify Cloud Pro (v1.7.1) のナレッジ検索で、インデックス済みの�
 ### 顧客からの確認
 - **Kyohei Katada (2025-08-08 18:57)**: 「直りました！」
 - → **解決確認済み**
+
+## 原因（判明している範囲／仮説）
+※必要に応じて追記
+
+## 解決方法（実施手順・設定値）
+※必要に応じて追記
+
+## 再発防止・運用メモ
+※必要に応じて追記

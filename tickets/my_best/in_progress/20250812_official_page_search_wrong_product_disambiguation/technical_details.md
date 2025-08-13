@@ -7,8 +7,19 @@ complexity: "中"
 tech_category: "プロンプト設計/検索クエリ/検証ルール"
 issued_at: "2025-08-12"
 due_date: ""
-ball_holder: "当方"
+ball_holder: "先方"
 ---
+
+## 最終適用内容（2025-08-13）
+- Query 厳密化: 「商材/メーカー/製品名/（必要時）型番」を明示し、`公式/製品情報` を含める。
+- Domain 制約: `site:公式ドメイン`／ブランド公式を優先。allow/block リスト導入。
+- Exclude 語: `-公園 -イベント -施設 -スライダー -レビュー -まとめ -価格比較` 等を付与。
+- Identity 抽出: brand/product_name/model/category/official/url を抽出し正規化。
+- Consistency 検証: verdict/confidence/mismatch_reasons を出力。採用閾値 `confidence ≥ 0.85`。
+
+### ケース別プリセット
+- 「ウォーターランド」: 施設系語の除外を強化、公式ドメイン局所化。
+- AGF「ちょっと贅沢な珈琲店」: カテゴリ=コーヒー豆を強制、インスタント/スティックを除外。
 
 ## 検索クエリの推奨テンプレ
 ```text
@@ -72,5 +83,3 @@ def accept_candidate(target, candidate, verdict, confidence):
 - 既知の誤取得 10件 + 正解URLを用意
 - 設定A: 既存、設定B: 公式優先 + バリデータ導入 でAB
 - 指標: 誤採用率（↓）、未採用率（↔︎〜↓）、処理時間（↔︎）
-
-
